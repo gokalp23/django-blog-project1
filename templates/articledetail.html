@@ -1,0 +1,78 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<div class="row">
+
+    <!-- Post Content Column -->
+    <div class="col-lg-8">
+
+      <!-- Title -->
+      <h2 class="mt-4">{{article.title}}</h2>
+
+      <!-- Author -->
+      <p class="lead">
+        {{article.author.username}} tarafından yazıldı.
+      </p>
+
+      <hr>
+
+      <!-- Date/Time -->
+      <p>{{article.created_date}}</p>
+
+      <hr>
+
+      <!-- Preview Image -->
+      {% if article.article_image %}
+      <img class="img-fluid rounded" src="{{article.article_image.url}}" alt="">
+      {% endif %}
+      
+
+      <hr>
+
+      <!-- Post Content -->
+      <p>
+          {{article.content|safe}}
+      </p>
+
+      <hr>
+      <div class="card my-4">
+          <h5 class="card-header">Yorum ekleyin:</h5>
+          <div class="card-body">
+            <form action="{% url 'article:addcomment' article.id %}" method="POST" >
+              {% csrf_token %}
+              <div class="form-group">
+                  <label>İsim:</label>
+                  <input name="comment_author" type="text" class="form-control" placeholder="İsminizi giriniz...">
+                </div>
+              <div class="form-group">
+                  <label>Yorum:</label>
+                <textarea name="comment_content" class="form-control" placeholder="Yorumunuzu giriniz..." rows="3"></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary">Gönder</button>
+            </form>
+          </div>
+        </div>
+        {% if comments %}
+        {% for item in comments %}
+        <div class="media mb-4">
+            <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
+            <div class="media-body">
+              <h6 class="mt-0">{{item.comment_author}}:</h6>
+              {{item.comment_content}} <br>
+              <small>{{item.comment_date}} tarihinde yazıldı.</small>
+            </div>
+          </div>
+          <hr>
+        {% endfor %}
+        {% else %}
+        <div class="alert alert-danger">
+          Bu makaleye ait yorum bulunmuyor...
+
+        </div>
+        {% endif %}
+        
+
+    </div>
+
+  </div>
+{% endblock body %}

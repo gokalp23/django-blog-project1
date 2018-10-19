@@ -1,0 +1,7 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<h4>{{article.title}} başlıklı yazıyı silmek istediğinize emin misiniz ?</h4>
+<a href="{% url 'article:deletearticle' article.id %}" class="btn btn-danger btn-lg">Evet</a>
+<a href="{% url 'article:dashboard' %}" class="btn btn-success btn-lg">Hayır</a>
+{% endblock body %}

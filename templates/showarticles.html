@@ -1,0 +1,91 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<h3>Yazılar</h3>
+<hr>
+{% if articles  %}
+<form>
+        {% csrf_token %}
+    <div class="input-group stylish-input-group col-md-6">
+        <input type="text" name="keyword" class="form-control" placeholder="Yazı Başlığı Arayın..." >
+        <span class="input-group-addon">
+            <button type="submit" class="btn btn-success">
+                Başlık Ara
+            </button>  
+        </span>
+    </div>
+</form>
+
+<hr>
+
+  {% for article in articles  %}
+    <div class="row">
+
+    <!-- Post Content Column -->
+    <div class="col-lg-8">
+
+      <!-- Title -->
+      <a href="{% url 'article:articledetail' article.id %}"><h3 class="mt-4">{{article.title}}</h3></a>
+
+      <!-- Author -->
+      <p class="lead">
+        {{article.author.username}} tarafından yazıldı.
+      </p>
+
+      <hr>
+
+      <!-- Date/Time -->
+      <p>{{article.created_date}}</p>
+
+      <hr>
+
+      <!-- Preview Image -->
+      {% if article.article_image %}
+      <a href="{% url 'article:articledetail' article.id %}"><img class="img-fluid rounded" src="{{article.article_image.url}}" alt=""></a>
+      {% endif %}
+      
+
+      <hr>
+
+      <!-- Post Content -->
+      <p>
+          {{article.content|safe|truncatewords:50}}
+      </p>
+      <a href="{% url 'article:articledetail' article.id %}" class="btn btn-primary btn-sm">Devamı için...</a>
+
+      <hr>
+
+    </div>
+
+  </div>
+  {% endfor %}
+  {% if articles.has_other_pages %}
+  <ul class="pagination">
+    {% if articles.has_previous %}
+      <li class="page-item"><a class="page-link" href="?page={{ articles.previous_page_number }}">Önceki</a></li>
+    {% else %}
+      <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1"><span>Önceki</span></a></li>
+    {% endif %}
+    {% for i in articles.paginator.page_range %}
+      {% if articles.number == i %}
+        <li class="page-item active"> <a class="page-link" href="#"> <span>{{ i }} <span class="sr-only">(current)</span></span></a></li>
+      {% else %}
+        <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+      {% endif %}
+    {% endfor %}
+    {% if articles.has_next %}
+      <li class="page-item"><a class="page-link" href="?page={{ articles.next_page_number }}">Sonraki</a></li>
+    {% else %}
+      <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1"><span>Sonraki</span></a></li>
+    {% endif %}
+  </ul>
+{% endif %}
+{% else %}
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <strong>Yazı bulunmuyor...</strong>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+{% endif %}
+{% endblock body %}
